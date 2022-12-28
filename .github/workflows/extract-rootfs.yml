@@ -1,0 +1,39 @@
+name: Extract RootFS from Docker Image
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "release.txt"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Docker Image
+        run: |
+          docker build . -t fedora:$(cat release.txt)
+
+      - name: Extract RootFS
+        run: |
+          docker create --name fedora fedora:$(cat release.txt)
+          docker export -o rootfs.tar fedora
+          gzip rootfs.tar
+          docker rm -f fedora
+
+      - name: Upload RootFS
+        uses: actions/upload-artifact@v2
+        with:
+          name: rootfs.tar.gz
+          path: rootfs.tar.gz
