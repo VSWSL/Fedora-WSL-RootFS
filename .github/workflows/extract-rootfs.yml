@@ -6,6 +6,9 @@ on:
       - main
     paths:
       - "release.txt"
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
