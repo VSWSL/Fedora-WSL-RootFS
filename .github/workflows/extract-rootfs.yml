@@ -33,7 +33,7 @@ jobs:
           docker rm -f fedora
 
       - name: Upload RootFS
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: rootfs.tar.gz
           path: rootfs.tar.gz
