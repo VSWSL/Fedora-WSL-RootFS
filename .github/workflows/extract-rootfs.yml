@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "release.txt"
+      - "version.txt"
   pull_request:
     branches:
       - main
