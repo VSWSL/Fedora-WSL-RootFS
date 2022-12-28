@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "release.txt"
+      - "version.txt"
   pull_request:
     branches:
       - main
@@ -26,11 +26,11 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build . -t fedora:$(cat release.txt)
+          docker build . -t fedora:$(cat version.txt)
 
       - name: Extract RootFS
         run: |
-          docker create --name fedora fedora:$(cat release.txt)
+          docker create --name fedora fedora:$(cat version.txt)
           docker export -o rootfs.tar fedora
           gzip rootfs.tar
           docker rm -f fedora
