@@ -4,16 +4,18 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "version.txt"
+    tags:
+      - v*
   pull_request:
     branches:
       - main
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-latest-arm64]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Check out
         uses: actions/checkout@v4
@@ -26,17 +28,37 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build . -t fedora:$(cat version.txt)
+          docker build -f Dockerfile . -t fedora
 
       - name: Extract RootFS
         run: |
-          docker create --name fedora fedora:$(cat version.txt)
-          docker export -o rootfs.tar fedora
-          gzip rootfs.tar
-          docker rm -f fedora
+          docker create --name fedora fedora
+          docker export -o rootfs.$(dpkg --print-architecture).tar fedora
+          gzip rootfs.$(dpkg --print-architecture).tar
+          docker rm fedora
 
       - name: Upload RootFS
         uses: actions/upload-artifact@v3
         with:
-          name: rootfs.tar.gz
-          path: rootfs.tar.gz
+          name: rootfs
+          path: rootfs.*.tar.gz
+
+  release:
+    name: Release
+    needs: build
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download RootFS
+        id: download-rootfs
+        uses: actions/download-artifact@v3
+        with:
+          name: rootfs
+          path: rootfs
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.RELEASE_TOKEN }}"
+          prerelease: false
+          files: |
+            ${{ steps.download-rootfs.outputs.download-path }}/*.tar.gz
