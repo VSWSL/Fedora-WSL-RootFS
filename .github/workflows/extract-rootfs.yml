@@ -37,10 +37,15 @@ jobs:
           gzip rootfs.$(dpkg --print-architecture).tar
           docker rm fedora
 
+      - name: Set Vars
+        id: vars
+        run: |
+          echo "arch=$(dpkg --print-architecture)" >> "$GITHUB_OUTPUT"
+
       - name: Upload RootFS
         uses: actions/upload-artifact@v4
         with:
-          name: rootfs-${{ matrix.os }}
+          name: rootfs.${{ steps.vars.outputs.arch }}
           path: rootfs.*.tar.gz
 
   release:
@@ -53,8 +58,12 @@ jobs:
         id: download-rootfs
         uses: actions/download-artifact@v4
         with:
-          name: rootfs-ubuntu-latest, rootfs-ubuntu-latest-arm64
           path: rootfs
+          pattern: rootfs.*
+          merge-multiple: true
+
+      - name: List Files
+        run: ls -R ${{ steps.download-rootfs.outputs.download-path }}
 
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
