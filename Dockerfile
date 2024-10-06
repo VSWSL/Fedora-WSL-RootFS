@@ -10,5 +10,5 @@ RUN dnf copr enable scaryrawr/mesa-d3d12 -y
 RUN dnf update -y
 RUN dnf install mesa-dri-drivers mesa-d3d12 mesa-vdpau-drivers -y
 RUN git clone https://github.com/scaryrawr/bottle-imp
-RUN cd bottle-imp && make internal-systemd internal-binfmt
+RUN cd bottle-imp && make internal-systemd internal-binfmt DESTDIR=/usr
 RUN rm -rf bottle-imp
