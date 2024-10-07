@@ -36,7 +36,7 @@ jobs:
       - name: Set Vars
         id: vars
         run: |
-          echo "${{ matrix.platform }}" | awk -F'/' '{ print $2 }' >> "$GITHUB_OUTPUT"
+          echo "${{ matrix.platform }}" | awk -F'/' '{ printf "arch=%s", $2 }' >> "$GITHUB_OUTPUT"
 
       - name: Extract RootFS
         run: |
