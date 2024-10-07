@@ -31,7 +31,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker buildx build --platform ${{ matrix.platform }} -f Dockerfile . -t fedora
+          docker build --platform ${{ matrix.platform }} -f Dockerfile . -t fedora
 
       - name: Set Vars
         id: vars
@@ -40,7 +40,7 @@ jobs:
 
       - name: Extract RootFS
         run: |
-          docker buildx create --platform ${{ matrix.platform }} --name fedora fedora echo "Fedora Linux"
+          docker create --platform ${{ matrix.platform }} --name fedora fedora echo "Fedora Linux"
           docker export -o rootfs.${{ steps.vars.outputs.arch }}.tar fedora
           tar -cJf rootfs.${{ steps.vars.outputs.arch }}.tar.xz rootfs.${{ steps.vars.outputs.arch }}.tar
           docker rm fedora
