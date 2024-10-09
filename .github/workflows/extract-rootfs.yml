@@ -42,14 +42,14 @@ jobs:
         run: |
           docker create --platform ${{ matrix.platform }} --name fedora fedora echo "Fedora Linux"
           docker export -o rootfs.${{ steps.vars.outputs.arch }}.tar fedora
-          tar -cJf rootfs.${{ steps.vars.outputs.arch }}.tar.xz rootfs.${{ steps.vars.outputs.arch }}.tar
+          gzip rootfs.${{ steps.vars.outputs.arch }}.tar
           docker rm fedora
 
       - name: Upload RootFS
         uses: actions/upload-artifact@v4
         with:
           name: rootfs.${{ steps.vars.outputs.arch }}
-          path: rootfs.*.tar.xz
+          path: rootfs.*.tar.gz
 
   release:
     name: Release
@@ -73,4 +73,4 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: |
-            ${{ steps.download-rootfs.outputs.download-path }}/*.tar.xz
+            ${{ steps.download-rootfs.outputs.download-path }}/*.tar.gz
