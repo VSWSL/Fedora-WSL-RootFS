@@ -10,6 +10,6 @@ updates:
     schedule:
       interval: "weekly"
     assignees:
-      - "vineelsai26"
+      - "scaryrawr"
     commit-message:
       prefix: "github-actions"

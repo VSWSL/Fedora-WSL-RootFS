@@ -1,0 +1,3 @@
+[submodule "bottle-imp"]
+	path = bottle-imp
+	url = https://github.com/scaryrawr/bottle-imp
