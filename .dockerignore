@@ -1,10 +1,11 @@
-.github
+.devcontainer
+.dockerenv
+.dockerignore
 .git
+.github
+.gitignore
 .gitignore
 .gitmodules
-.dockerignore
 Dockerfile
-.gitignore
 release.txt
-.dockerenv
-.devcontainer
+README.md
