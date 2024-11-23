@@ -1,5 +1,4 @@
 .devcontainer
-.dockerenv
 .dockerignore
 .git
 .github
